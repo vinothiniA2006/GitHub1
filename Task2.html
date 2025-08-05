@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic-Tac-Boom</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background-color: lightblue;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 30px;
+      color: black;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 3px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      border: 2px solid;
+      font-size: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .cell:hover {
+      background-color: lightblue;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic-Tac-Boom</h1>
+  <div class="board" id="board"></div>
+  <p id="status"></p>
+  <button onclick="startGame()">Restart Game</button>
+
+  <script>
+    let board = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    let isGameActive = true;
+
+    const winCombos = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    function startGame() {
+      board = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      isGameActive = true;
+      document.getElementById("status").textContent = "";
+      drawBoard();
+    }
+
+    function drawBoard() {
+      const boardDiv = document.getElementById("board");
+      boardDiv.innerHTML = "";
+
+      board.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        cellDiv.classList.add("cell");
+        cellDiv.textContent = cell;
+        cellDiv.addEventListener("click", () => handleCellClick(index));
+        boardDiv.appendChild(cellDiv);
+      });
+    }
+
+    function handleCellClick(index) {
+      if (board[index] !== "" || !isGameActive) return;
+
+      board[index] = currentPlayer;
+      drawBoard();
+      checkResult();
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+    }
+
+    function checkResult() {
+      for (let combo of winCombos) {
+        const [a, b, c] = combo;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          document.getElementById("status").textContent = ${board[a]} Wins!;
+          isGameActive = false;
+          return;
+        }
+      }
+
+      if (!board.includes("")) {
+        document.getElementById("status").textContent = "It's a Draw!";
+        isGameActive = false;
+      }
+    }
+
+    window.onload = startGame;
+  </script>
+</body>
+</html>
